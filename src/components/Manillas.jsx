@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
+import { collection, addDoc } from 'firebase/firestore';
+import db from './Firebase';
+
 
 const Manillas = () => {
     const [cantidad, setCantidad] = useState(0);
-    const [material, setMaterial] = useState('cuero');
-    const [dije, setDije] = useState('martillo');
-    const [moneda, setMoneda] = useState('dolar');
-    const [tipo, setTipo] = useState('oro');
-    const [costo, setCosto] = useState(0);
+  const [material, setMaterial] = useState('cuero');
+  const [dije, setDije] = useState('martillo');
+  const [moneda, setMoneda] = useState('dolar');
+  const [tipo, setTipo] = useState('oro');
+  const [costo, setCosto] = useState(0);
 
   const manejarCambioCantidad = (event) => {
     const valor = parseInt(event.target.value, 10);
@@ -29,10 +32,10 @@ const Manillas = () => {
     setTipo(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    //  cálculos de las combinaciones 
+    // Cálculos de las combinaciones
     let nuevoCosto = 0;
     if (material === 'cuero') {
       if (dije === 'martillo') {
@@ -72,21 +75,38 @@ const Manillas = () => {
       }
     }
 
-    //costo a la moneda seleccionada
+    // Costo a la moneda seleccionada
     if (moneda === 'pesos') {
       nuevoCosto *= 5000; // Conversión de dólares a pesos (1 dólar = 5000 pesos)
     }
 
-    // costo según la cantidad
+    // Costo según la cantidad
     nuevoCosto *= cantidad;
 
     // Actualizar el estado del costo
     setCosto(nuevoCosto);
+
+    try {
+      // Guardar los datos en Firebase
+      const docRef = await addDoc(collection(db, 'manillas'), {
+        cantidad,
+        material,
+        dije,
+        tipo,
+        moneda,
+        costo: nuevoCosto,
+      });
+
+      console.log('Documento guardado con ID: ', docRef.id);
+
+    } catch (error) {
+      console.error('Error al guardar el documento: ', error);
+    }
   };
 
   return (
     <div className='container mt-5'>
-      <h1 className='text-center'> Manillas didier </h1>
+      <h1 className='text-center'>Manillas didier</h1>
       <hr />
       <div className='row'>
         <div className='col-8'></div>
@@ -139,5 +159,6 @@ const Manillas = () => {
     </div>
   );
 };
+
 
 export default Manillas
