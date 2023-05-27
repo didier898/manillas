@@ -7,32 +7,31 @@ const Manillas = () => {
     const [moneda, setMoneda] = useState('dolar');
     const [tipo, setTipo] = useState('oro');
     const [costo, setCosto] = useState(0);
-    
-    const manejarCambioCantidad = (event) => {
-        setCantidad(parseInt(event.target.value, 10));
-      };
-      
-      const manejarCambioMaterial = (event) => {
-        setMaterial(event.target.value);
-      };
-      const manejarCambioDije = (event) => {
-        setDije(event.target.value);
-      };
-    
-      const manejarCambioMoneda = (event) => {
-        setMoneda(event.target.value);
-      };
-    
-      const manejarCambioTipo = (event) => {
-        setTipo(event.target.value);
-      };
 
+  const manejarCambioCantidad = (event) => {
+    const valor = parseInt(event.target.value, 10);
+    setCantidad(isNaN(valor) || valor < 0 ? 0 : valor);
+  };
 
+  const manejarCambioMaterial = (event) => {
+    setMaterial(event.target.value);
+  };
 
+  const manejarCambioDije = (event) => {
+    setDije(event.target.value);
+  };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();      
-    
+  const manejarCambioMoneda = (event) => {
+    setMoneda(event.target.value);
+  };
+
+  const manejarCambioTipo = (event) => {
+    setTipo(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
     //  cálculos de las combinaciones 
     let nuevoCosto = 0;
     if (material === 'cuero') {
@@ -71,26 +70,22 @@ const Manillas = () => {
           nuevoCosto = 80;
         }
       }
-      
     }
+
     //costo a la moneda seleccionada
     if (moneda === 'pesos') {
-        nuevoCosto *= 5000; // Conversión de dólares a pesos (1 dólar = 5000 pesos)
-      }
-  
-      // costo según la cantidad
-      nuevoCosto *= cantidad;
-  
-      // Actualizar el estado del costo
-      setCosto(nuevoCosto);
-    };
-    
-      
-        
+      nuevoCosto *= 5000; // Conversión de dólares a pesos (1 dólar = 5000 pesos)
+    }
+
+    // costo según la cantidad
+    nuevoCosto *= cantidad;
+
+    // Actualizar el estado del costo
+    setCosto(nuevoCosto);
+  };
 
   return (
-    
-        <div className='container mt-5'>
+    <div className='container mt-5'>
       <h1 className='text-center'> Manillas didier </h1>
       <hr />
       <div className='row'>
@@ -138,11 +133,11 @@ const Manillas = () => {
           </label>
           <br />
           <button type='submit'>Calcular</button>
-          </form>
+        </form>
+        <p>Costo: {moneda === 'pesos' ? `$${costo.toLocaleString()}` : `$${costo}`}</p>
+      </div>
     </div>
-    </div>
-    
-  )
-}
+  );
+};
 
 export default Manillas
